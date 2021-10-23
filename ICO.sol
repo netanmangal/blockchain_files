@@ -75,10 +75,14 @@ contract ICO is ERC20Interface {
     
     function buyTokens() public payable {
         require(isICORunning);
+        
         uint tokens = msg.value;
-        if (balances[msg.sender] == 0 && msg.value > 0) totalContributors++;
-        balances[msg.sender] += tokens;
-        allTokens += tokens;
+        if (now < bonusEnds) tokens = tokens + 100;
+        
+        if (balances[msg.sender] == 0 && msg.value > 0) totalContributors.add(uint256(1));
+        balances[msg.sender] = balances[msg.sender].add(tokens);
+        allTokens = allTokens.add(tokens);
+        emit Transfer(address(0), msg.sender, tokens);
     }
     
     function totalSupply() public view returns (uint256) {
